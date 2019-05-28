@@ -83,6 +83,10 @@ Examples:
  - `find . \! -user owner` looks for files that are not owned by `'owner'`. The `'!'` operator negates and `'\'` escapes so that it can be interpreted by  the shell.
  - `find . -perm -222` finds files with at least write permissions for all. For example, this will return files with `222` and `777` but not `644` or `700`.
 #### grep
+Search for the pattern in a file or all files in a directory. Examples:
+ - `grep -Rl` : Recursively (include symbolic links) list all files.
+ - `grep -rl` : Recursively (do not include symbolic links) list all files.
+ - `grep -RHn` : Search recursively (including symbolic links) for the word (output including path to file, line number and matching line)
  
 ### Compare & Manipulating Text
 #### cmp
@@ -108,6 +112,22 @@ Examples:
 ### Regular Expressions
 #### File Globbing
 #### Regex
+| Character |                Definition                |  Example   |        Result         |
+| :-------: | :--------------------------------------: | :--------: | :-------------------: |
+|     ^     |            Start of a string             |    ^abc    |    abc, abcd, abc1    |
+|     $     |             End of a string              |    abc$    |  abc, rasabc, 2aabc   |
+|     .     |       Any character except newline       |    a.c     |     abc, acc, a1c     |
+|           |                                          | Alteration |           a           |
+|   {...}   | Explicit quantity of preceding character |   ab{2}c   |         abbc          |
+|   [...]   |   Explicit set of characters to match    |   a[bB]c   |        abc,aBc        |
+| [a-z0-9]  |   One lower case characters or number    | a[a-z0-9]c |        aac,a1c        |
+|   (...)   |           Group of characters            |  (abc){2}  |        abcabc         |
+|     *     | Null or more of the preceding characters |    a*bc    | bc, abc, aabc, aaaabc |
+|     +     |  One or more of the preceding character  |    a+bc    |       abc, aabc       |
+|     ?     |  Null or one of the preceding character  |    a?bc    |        bc, abc        |
+|    ^$     |               Empty string               |            |                       |
+
+* Not all regular expressions are supported by `grep`. As alternative can be used `egrep`
 #### Sed
  
 ### Redirection
@@ -120,11 +140,18 @@ Examples:
  
 ### Users, Groups and Privileges
 #### adduser
+`adduser alex`
 #### deluser
+`deluser alex`
 #### passwd
+`passwd alex`
 #### groups
+`groups alex`
 #### groupadd
+`groupadd sudoadmins`
 #### usermod
+`usermod -aG sudoadmins alex`
 #### groupdel
+`groupdel sudoadmins`
 #### visudo
 
