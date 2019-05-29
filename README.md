@@ -138,7 +138,8 @@ Search for the pattern in a file or all files in a directory. Examples:
 #### |& : stderr to stdin
 #### 2>&1 : redirect stderr to same place of stdout
  
-### Users, Groups and Privileges
+### Users, Groups and Their Privileges
+For privileges relating specifically to files, see
 #### adduser
 `adduser alex`
 #### deluser
@@ -155,3 +156,4 @@ Search for the pattern in a file or all files in a directory. Examples:
 `groupdel sudoadmins`
 #### visudo
 
+## Service Configuration
