@@ -157,3 +157,85 @@ For privileges relating specifically to files, see
 #### visudo
 
 ## Service Configuration
+### Configure a caching DNS server & maintain a DNS zone
+### Configure email aliases
+### Configure SSH servers and clients
+### Configure an HTTP server
+#### Configure HTTP server log files
+#### Restrict access to a web page
+#### Restrict access to the HTTP proxy server
+### Configure an IMAP and IMAPS service
+### Query and modify the behavior of system services at various operating modes
+### Configure a database server
+### Manage and configure containers
+### Manage and configure Virtual Machines
+https://computingforgeeks.com/virsh-commands-cheatsheet/
+#### Install QEMU and KVM
+First check the cpu to see whether or not it is capable of virtualization with the `kvm-ok` tool.
+
+    $ sudo apt install cpu-checker
+    $ kvm-ok
+The following output tells us that the system is ready to virtualize.
+
+    INFO: /dev/kvm exists
+    KVM acceleration can be used
+Once we have confirmed that the system is compatible, we can install the neccesary packages.
+
+    $ sudo apt install qemu-kvm libvirt virt-install
+Use `systemctl status libvirtd` to determine whether you need to start or enable the service, if neccesary.
+#### Virsh Manage Storage Pools
+List all existing pools.
+
+    $ virsh pool-list --all
+     Name                 State      Autostart
+    -------------------------------------------
+     default              active     yes
+
+Create a new disk based pool
+
+    $ sudo virsh pool-define-as vdisk1 dir - - - - "/home/alex/pools"
+    Pool vdisk1 defined
+    
+    $ sudo virsh pool-build vdisk1
+    Pool vdisk1 built
+    
+    $ sudo virsh pool-start vdisk1
+    Pool vdisk1 started
+    
+    $ sudo virsh pool-autostart vdisk1
+    Pool vdisk1 marked as autostarted
+    
+    $ virsh pool-list --all
+     Name                 State      Autostart
+    -------------------------------------------
+     default              active     yes
+     vdisk1               active     yes
+     
+    $ sudo cat /etc/libvirt/storage/vdisk1.xml
+    <!--
+    WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+    OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+      virsh pool-edit vdisk1
+    or other application using the libvirt API.
+    -->
+    
+    <pool type='dir'>
+      <name>vdisk1</name>
+      <uuid>7b4ebbc0-1ec5-4f74-a83a-7fbb820d5da7</uuid>
+      <capacity unit='bytes'>0</capacity>
+      <allocation unit='bytes'>0</allocation>
+      <available unit='bytes'>0</available>
+      <source>
+      </source>
+      <target>
+        <path>/home/alex/pools</path>
+      </target>
+    </pool>
+
+#### Virsh Manage Volumes
+
+
+    $ sudo virsh vol-create-as default  volume.qcow2  2G
+    Vol test_vol2.qcow2 created
+    $ ls /var/lib/libvirt/images
+    volume.qcow2
