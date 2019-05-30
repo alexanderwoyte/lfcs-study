@@ -232,10 +232,49 @@ Create a new disk based pool
       </target>
     </pool>
 
-#### Virsh Manage Volumes
+#### Virsh Manage Volumes (Virtual Storage, within a pool)
 
-
+    # Create a volume within the default pool.
     $ sudo virsh vol-create-as default  volume.qcow2  2G
     Vol test_vol2.qcow2 created
     $ ls /var/lib/libvirt/images
     volume.qcow2
+
+#### Creating a New VM
+##### newvm.sh
+    #!/bin/bash
+    #Alexander Woyte, May 2019
+    #Usage: ./newvm.sh <name> <path to storage vol>
+    sudo virt-install --name $1 \
+        --ram 1024 --vcpus 1 \
+        --os-type linux \
+        --network network:default \
+        --graphics none --console pty,target_type=serial \
+        --location 'http://us.archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/' \
+        --extra-args 'console=ttyS0,115200n8 serial' --force --debug \
+        --disk $2,bus=virtio
+  
+Remember to `chmod +x newvm.sh`, adding executable permission to the current user.
+This script will capture the prompt, so be prepared. Detatch from it with `^]`
+Use the script, replacing arguments, like so:
+
+    ./installvm.sh testvm0 /var/lib/libvirt/images/vol.qcow2
+    
+If you installed it with SSH, which you should've, move on to the next section about connecting to the machine.
+
+#### Connecting to the New VM (SSH)
+Find the IP address of the machine you need with the following:
+
+    sudo virsh net-dhcp-leases default
+
+`default` represents the default connection. Find your other connections with the following, which may not be neccesary:
+
+    sudo virsh net-list
+    
+Alternatively, you may use the name of the vm to get IP and MAC info with the following:
+
+    sudo virsh domifaddr testvm0
+    
+Lastly, connect to it:
+
+    ssh alex@192.168.122.92
