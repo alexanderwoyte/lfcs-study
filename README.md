@@ -278,3 +278,39 @@ Alternatively, you may use the name of the vm to get IP and MAC info with the fo
 Lastly, connect to it:
 
     ssh alex@192.168.122.92
+
+#### General VM Management
+    sudo virsh list --all
+This lists all of the virtual machines configured on the system. Taking away `--all` would only show running guests.
+
+    sudo virsh start vm0
+This starts a VM called `vm0`, which can also be referenced by its ID instead of name.
+
+    sudo virsh autostart vm0
+    sudo virsh autostart --disable vm0
+Either enables or disables automatic start on host system boot. Only effective if service `libvirtd` is enabled to start on boot as well.
+
+    sudo virsh shutdown vm0
+This shuts down the guest.
+
+    sudo virsh destroy vm0
+This forcefully shuts down a VM, be careful.
+
+    sudo virsh undefine vm0
+This removes a VM from the system.
+
+    sudo virsh console vm0
+Enter a console on the system. Only works if the VM has been configured to use console.
+
+##### Cloning Virtual Machines
+First, pause or shutdown the system safely.
+
+    sudo virsh suspend vm0
+    # OR
+    sudo virsh shutdown vm0
+
+Use `sudo virsh list --all` to make sure that this was done effectively.
+
+    sudo virt-clone --original vm0 --auto-clone
+
+This command will create `vm0-clone`, however host name and DHCP configuration changes will need to be done in order to use them as separate networking devices.
