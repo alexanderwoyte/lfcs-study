@@ -314,3 +314,19 @@ Use `sudo virsh list --all` to make sure that this was done effectively.
     sudo virt-clone --original vm0 --auto-clone
 
 This command will create `vm0-clone`, however host name and DHCP configuration changes will need to be done in order to use them as separate networking devices.
+
+As of right now, without starting `vm0-clone`, you will not find a recorded address for it. So, start it. Resume the original as well, if neccesary, but only after starting the clone. The clone will take on the network configuration of the original, and the original will cease to network, for now.
+
+    sudo virsh start vm0-clone
+
+If doing an address check with `domifaddr` returns blank results now, rather than errors, try again in a minute. There should be no more entries here, however, the address previously representing the original VM will now represent the clone, so ssh to the clone and make the following changes:
+
+    $ sudo virsh domifaddr testvm0-clone
+     Name       MAC address          Protocol     Address
+    -------------------------------------------------------------------------------
+     vnet0      52:54:00:78:a7:b3    ipv4         192.168.122.185/24
+    $ ssh user@192.168.122.185
+    # Shell Change
+    $ sudo su
+    $ echo "newhostname" > /etc/hostname
+    $ sed -i "s/ubuntu/clonesys/g" /etc/hosts
