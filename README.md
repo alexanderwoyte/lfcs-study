@@ -226,7 +226,14 @@ Last, check to make sure that the address is properly assigned, it should look s
 
     example.com has address 192.168.69.69
 
-If we don't specify `localhost` at the end, the name will default to resolve from outside nameserver. Thus, we must specify the NS at `localhost` to recieve the results we are looking for.
+If we don't specify `localhost` at the end, the name will default to resolve from outside nameserver. Thus, we must specify the NS at `localhost` to recieve the results we are looking for. To finish things off, configure the computer to use your server as a nameserver. The same should be done for other servers on the network that need to use this nameserver. Add this line to the effective beginning of `/etc/resolv.conf`
+
+    nameserver 192.168.122.185
+    
+Replace this IP with yours. Now you can fetch the IP from the host without specifying the nameserver:
+
+    $ host example.com
+    example.com has address 192.168.69.69
 
 ### Configure email aliases
 ### Configure SSH servers and clients
