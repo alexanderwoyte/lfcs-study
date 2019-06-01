@@ -158,6 +158,76 @@ For privileges relating specifically to files, see
 
 ## Service Configuration
 ### Configure a caching DNS server & maintain a DNS zone
+DNS software is called bind, install it.
+
+    sudo apt install bind9 bind9utils
+    
+Make sure that it is running and enabled for startup.
+
+    sudo systemctl status bind9
+    
+Next, make a copy of the `named.conf.options` file.
+
+    sudo cp /etc/bind/named.conf.options /etc/bind/named.conf.options.original
+
+Change the active one named `named.conf.options` to the following:
+
+    acl whitelist {
+        192.0.0.0/24;
+        localhost;
+        localnets;
+    };
+
+    options {
+        directory "/var/cache/bind";
+        
+        recursion yes;
+        allow-query { whitelist; };
+        
+        forwarders {
+            8.8.8.8;
+            8.8.4.4;
+        };
+        
+        dnssec-validation auto;
+        
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+    };
+    
+Create a backup of `named.conf.local` like the last. Next, create the zone/s in the active file vim:
+
+    zone "example.com" {
+        type master;
+        file "/etc/bind/db.example.com";
+    };
+
+Now copy the `db.empty` file and name it `db.example.com`, as specified in `named.conf.local`. Edit the file, replacing `localhost. root.localhost.` with the name of the zone, in this case the line will look like this:
+
+    @       IN      SOA     example.com. root.example.com. (
+
+Then, edit the file. Remove the last line and replace it with these:
+
+    example.com.            IN      NS      example.com.
+    example.com.            IN      A       192.168.69.69
+    
+Restart the service and check the status to make sure there weren't any errors.
+
+    sudo systemctl restart bind9
+    sudo systemctl status bind9
+
+Last, check to make sure that the address is properly assigned, it should look something like this:
+
+    $ host example.com localhost
+    Using domain server:
+    Name: localhost
+    Address: ::1#53
+    Aliases: 
+
+    example.com has address 192.168.69.69
+
+If we don't specify `localhost` at the end, the name will default to resolve from outside nameserver. Thus, we must specify the NS at `localhost` to recieve the results we are looking for.
+
 ### Configure email aliases
 ### Configure SSH servers and clients
 ### Configure an HTTP server
