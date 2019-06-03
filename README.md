@@ -252,7 +252,20 @@ Use the `mailx` command to recieve your mail. Now, to create an email alias, edi
     
 Execute the `newaliases` command to refresh aliases. Now, try the same test command as before, instead with the username `alexander` and see that the message is still recieved with `mailx`.
 ### Configure SSH servers and clients
+#### Config File
+The configuration file for openssh server is located at `/etc/ssh/sshd_config`, whereas the client config file is located at `/etc/ssh/ssh_config`. Here are some likely configuration changes to be made to `sshd_config`:
+
+ - `Port` is self explanatory. Can be changed to anything, try 2002 or 2222.
+ - `PermitRootLogin` enables/disables the option to ssh in as the root user. Usually this is disabled by default but good idea to check anyhow.
+ - `PasswordAuthentication` specifies whether or not the server should ask for a password, instead of just authenticating based on public/private keys. See below for more info.
+#### Key-Only Authentication
+If, as described above, you decide to only allow key exchange as a form of authentication, here are the instructions.
+ - Use the `ssh-keygen` command to create a key. The keys will be dropped in the user's home inside directory in `.ssh`.
+ - `ssh-copy-id alex@192.168.96.69` sends the key info to that server.
+#### SCP How-To
+`TODO`
 ### Configure an HTTP server
+    sudo apt install apache2
 #### Configure HTTP server log files
 #### Restrict access to a web page
 #### Restrict access to the HTTP proxy server
