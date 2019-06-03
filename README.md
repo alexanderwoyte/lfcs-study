@@ -236,6 +236,21 @@ Replace this IP with yours. Now you can fetch the IP from the host without speci
     example.com has address 192.168.69.69
 
 ### Configure email aliases
+https://serverfault.com/questions/136106/what-package-to-install-for-sending-emails-from-localhost-ubuntu
+
+First install mailx. This will take care of most things, as it will also install dovecot.
+
+    sudo apt install bsd-mailx
+    
+Test it with this. This will send a message with the contents "test" with a subject "foobar" to the user `alex`
+
+    echo "test" | mail -s "foobar" alex
+    
+Use the `mailx` command to recieve your mail. Now, to create an email alias, edit `/etc/aliases` and add the following line:
+
+    alexander: alex
+    
+Execute the `newaliases` command to refresh aliases. Now, try the same test command as before, instead with the username `alexander` and see that the message is still recieved with `mailx`.
 ### Configure SSH servers and clients
 ### Configure an HTTP server
 #### Configure HTTP server log files
